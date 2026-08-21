@@ -443,9 +443,9 @@ function startCallbackServer(expectedState) {
 
     // Timeout after 2 minutes (unref so it doesn't keep the process alive)
     const timer = setTimeout(() => {
-      rejectCode(new Error('Login timed out after 2 minutes'));
+      rejectCode(new Error('Login timed out after 15 minutes'));
       server.close();
-    }, 120_000);
+    }, 900_000);
     timer.unref();
   });
 }
