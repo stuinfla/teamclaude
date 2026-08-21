@@ -418,9 +418,12 @@ function startCallbackServer(expectedState) {
         }
 
         if (expectedState && state !== expectedState) {
+          // A mismatched/absent state is most often a garbled manual attempt
+          // (e.g. an unquoted URL whose &state= was eaten by a shell) or a
+          // stale restored tab. Refuse THIS request but keep the flow alive
+          // and waiting for a well-formed callback instead of dying on it.
           res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end('<html><body><h2>Authentication failed</h2><p>State mismatch. You can close this tab.</p></body></html>');
-          rejectCode(new Error('OAuth state mismatch'));
+          res.end('<html><body><h2>Not accepted</h2><p>State missing or mismatched (a shell may have eaten the &amp;state= part). Still waiting - try again with the FULL callback URL, quoted.</p></body></html>');
           return;
         }
 
